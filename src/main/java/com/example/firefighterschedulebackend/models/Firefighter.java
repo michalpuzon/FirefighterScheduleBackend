@@ -17,5 +17,7 @@ public class Firefighter {
     private String name;
     private String lastName;
     private int workNumber;
+    private String rang;
+    private String unit;
 
 }
