@@ -18,11 +18,22 @@ public class FirefighterController {
     }
 
     @GetMapping
-    public List<Firefighter> getAllFirefighters(){ return firefighterService.getAllFirefighters();}
+    public List<Firefighter> getAllFirefighters() {
+        return firefighterService.getAllFirefighters();
+    }
+
+    @GetMapping(path = {"firefighterId"})
+    public Firefighter getFirefighterById(@PathVariable("firefighterId") Long firefighterId) {
+        return firefighterService.getFirefighterById(firefighterId);
+    }
 
     @PostMapping
-    public void createNewFirefighter(@RequestBody FirefighterCreate firefighter){
+    public void createNewFirefighter(@RequestBody FirefighterCreate firefighter) {
         firefighterService.createNewFirefighter(firefighter);
     }
 
+    @DeleteMapping(path = "{firefighterId}")
+    public void deleteFirefighter(@PathVariable("firefighterId") Long firefighterId) {
+        firefighterService.deleteFirefighter(firefighterId);
+    }
 }

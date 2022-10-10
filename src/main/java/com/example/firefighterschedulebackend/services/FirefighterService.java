@@ -1,6 +1,7 @@
 package com.example.firefighterschedulebackend.services;
 
 import com.example.firefighterschedulebackend.mappers.FirefighterMapper;
+import com.example.firefighterschedulebackend.models.Position;
 import com.example.firefighterschedulebackend.models.dto.FirefighterCreate;
 import com.example.firefighterschedulebackend.models.Firefighter;
 import com.example.firefighterschedulebackend.repositories.FirefighterRepository;
@@ -24,11 +25,23 @@ public class FirefighterService {
         return firefighterRepository.findAll();
     }
 
+    public Firefighter getFirefighterById(Long firefighterId) {
+        return firefighterRepository.findAll().stream().filter(f -> firefighterId.equals(f.getId())).findFirst().orElse(null);
+    }
+
     public void createNewFirefighter(FirefighterCreate firefighter) {
         Optional<Firefighter> firefighterOptional = firefighterRepository.findByWorkNumber(firefighter.getWorkNumber());
         if (firefighterOptional.isPresent()) {
             throw new IllegalStateException("Firefighter with this workNumber already exists");
         }
         firefighterRepository.save(mapper.firefighterCreateToFirefighter(firefighter));
+    }
+
+    public void deleteFirefighter(Long firefighterId){
+        boolean exists = firefighterRepository.existsById(firefighterId);
+        if (!exists) {
+            throw new IllegalStateException("firefighter with id " + firefighterId + " does not exist");
+        }
+        firefighterRepository.deleteById(firefighterId);
     }
 }
