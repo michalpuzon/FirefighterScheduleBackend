@@ -1,7 +1,8 @@
 package com.example.firefighterschedulebackend.controllers;
 
 import com.example.firefighterschedulebackend.models.WorkDay;
-import com.example.firefighterschedulebackend.models.dto.WorkDayCreate;
+import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayCreate;
+import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayGet;
 import com.example.firefighterschedulebackend.services.WorkDayService;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,7 @@ public class WorkDayController {
     }
 
     @GetMapping
-    public List<WorkDay> getAllWorkDays(){
+    public List<WorkDayGet> getAllWorkDays(){
         return workDayService.getAllWorkDays();
     }
     @GetMapping(path = "{workDayId}")
@@ -26,8 +27,8 @@ public class WorkDayController {
     }
 
     @PostMapping
-    public void createNewWorkDay(@RequestBody WorkDayCreate workDay){
-        workDayService.createNewWorkDay(workDay);
+    public WorkDay createNewWorkDay(@RequestBody WorkDayCreate workDay){
+        return workDayService.createNewWorkDay(workDay);
     }
     @DeleteMapping(path = "{workDayId}")
     public void deleteWorkDay (@PathVariable("workDayId") Long workDayId) {

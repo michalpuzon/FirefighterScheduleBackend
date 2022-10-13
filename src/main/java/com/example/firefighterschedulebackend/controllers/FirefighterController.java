@@ -1,7 +1,7 @@
 package com.example.firefighterschedulebackend.controllers;
 
 import com.example.firefighterschedulebackend.models.Firefighter;
-import com.example.firefighterschedulebackend.models.dto.FirefighterCreate;
+import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterCreate;
 import com.example.firefighterschedulebackend.services.FirefighterService;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,8 +28,8 @@ public class FirefighterController {
     }
 
     @PostMapping
-    public void createNewFirefighter(@RequestBody FirefighterCreate firefighter) {
-        firefighterService.createNewFirefighter(firefighter);
+    public Firefighter createNewFirefighter(@RequestBody FirefighterCreate firefighter) {
+        return firefighterService.createNewFirefighter(firefighter);
     }
 
     @DeleteMapping(path = "{firefighterId}")

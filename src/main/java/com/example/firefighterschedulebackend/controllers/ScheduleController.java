@@ -1,7 +1,7 @@
 package com.example.firefighterschedulebackend.controllers;
 
 import com.example.firefighterschedulebackend.models.Schedule;
-import com.example.firefighterschedulebackend.models.dto.ScheduleCreate;
+import com.example.firefighterschedulebackend.models.dto.schedule.ScheduleCreate;
 import com.example.firefighterschedulebackend.services.ScheduleService;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,8 +27,12 @@ public class ScheduleController {
     }
 
     @PostMapping
-    public void createNewSchedule(@RequestBody ScheduleCreate schedule){
-        scheduleService.createNewSchedule(schedule);
+    public Schedule createNewSchedule(@RequestBody ScheduleCreate schedule){
+       return scheduleService.createNewSchedule(schedule);
+    }
+    @PostMapping(path = "days")
+    public void createNewScheduleWithDays(@RequestBody Schedule schedule) {
+        scheduleService.createScheduleWithDays(schedule);
     }
     @DeleteMapping(path = "{scheduleId}")
     public void deleteSchedule (@PathVariable("scheduleId") Long scheduleId) {

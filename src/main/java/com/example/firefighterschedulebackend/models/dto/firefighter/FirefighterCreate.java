@@ -1,8 +1,12 @@
-package com.example.firefighterschedulebackend.models.dto;
+package com.example.firefighterschedulebackend.models.dto.firefighter;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class FirefighterCreate {
 
     private String name;
