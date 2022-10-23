@@ -1,6 +1,6 @@
 package com.example.firefighterschedulebackend.services;
 
-import com.example.firefighterschedulebackend.mappers.PositionMapper;
+import com.example.firefighterschedulebackend.mappers.DtoMapper;
 import com.example.firefighterschedulebackend.models.Position;
 import com.example.firefighterschedulebackend.models.dto.position.PositionCreate;
 import com.example.firefighterschedulebackend.repositories.PositionRepository;
@@ -13,7 +13,7 @@ import java.util.Optional;
 @Service
 public class PositionService {
     private final PositionRepository positionRepository;
-    private final PositionMapper mapper = Mappers.getMapper(PositionMapper.class);
+    private final DtoMapper mapper = Mappers.getMapper(DtoMapper.class);
 
     public PositionService(PositionRepository positionRepository) {
         this.positionRepository = positionRepository;

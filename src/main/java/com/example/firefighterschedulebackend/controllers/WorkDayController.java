@@ -18,20 +18,22 @@ public class WorkDayController {
     }
 
     @GetMapping
-    public List<WorkDayGet> getAllWorkDays(){
+    public List<WorkDayGet> getAllWorkDays() {
         return workDayService.getAllWorkDays();
     }
+
     @GetMapping(path = "{workDayId}")
-    public WorkDay getWorkDayById(@PathVariable("workDayId") Long workDayId) {
+    public WorkDayGet getWorkDayById(@PathVariable("workDayId") Long workDayId) {
         return workDayService.getWorkDayById(workDayId);
     }
 
     @PostMapping
-    public WorkDay createNewWorkDay(@RequestBody WorkDayCreate workDay){
+    public WorkDay createNewWorkDay(@RequestBody WorkDayCreate workDay) {
         return workDayService.createNewWorkDay(workDay);
     }
+
     @DeleteMapping(path = "{workDayId}")
-    public void deleteWorkDay (@PathVariable("workDayId") Long workDayId) {
+    public void deleteWorkDay(@PathVariable("workDayId") Long workDayId) {
         workDayService.deleteWorkDay(workDayId);
     }
 }

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -16,5 +17,5 @@ public class ScheduleGet {
 
     private Date startDate;
     private Date endDate;
-    private Set<WorkDayGet> workDays;
+    private List<WorkDayGet> workDays;
 }

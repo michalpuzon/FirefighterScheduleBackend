@@ -1,6 +1,6 @@
 package com.example.firefighterschedulebackend.services;
 
-import com.example.firefighterschedulebackend.mappers.FirefighterMapper;
+import com.example.firefighterschedulebackend.mappers.DtoMapper;
 import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterCreate;
 import com.example.firefighterschedulebackend.models.Firefighter;
 import com.example.firefighterschedulebackend.repositories.FirefighterRepository;
@@ -14,7 +14,7 @@ import java.util.Optional;
 public class FirefighterService {
 
     private final FirefighterRepository firefighterRepository;
-    private final FirefighterMapper mapper = Mappers.getMapper(FirefighterMapper.class);
+    private final DtoMapper mapper = Mappers.getMapper(DtoMapper.class);
 
     public FirefighterService(FirefighterRepository firefighterRepository) {
         this.firefighterRepository = firefighterRepository;
