@@ -36,4 +36,10 @@ public class WorkDayController {
     public void deleteWorkDay(@PathVariable("workDayId") Long workDayId) {
         workDayService.deleteWorkDay(workDayId);
     }
+
+    @PutMapping(path = "{workDayId}/{firefighterId}")
+    public WorkDayGet addFirefighterToDay(@PathVariable("workDayId") Long workDayId,
+                                          @PathVariable("firefighterId") Long firefighterId) {
+        return workDayService.addFirefighterToWorkDay(workDayId, firefighterId);
+    }
 }

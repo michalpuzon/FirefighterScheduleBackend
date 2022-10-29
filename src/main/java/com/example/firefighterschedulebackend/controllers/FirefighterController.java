@@ -2,6 +2,7 @@ package com.example.firefighterschedulebackend.controllers;
 
 import com.example.firefighterschedulebackend.models.Firefighter;
 import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterCreate;
+import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterGet;
 import com.example.firefighterschedulebackend.services.FirefighterService;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,12 +19,12 @@ public class FirefighterController {
     }
 
     @GetMapping
-    public List<Firefighter> getAllFirefighters() {
+    public List<FirefighterGet> getAllFirefighters() {
         return firefighterService.getAllFirefighters();
     }
 
     @GetMapping(path = {"firefighterId"})
-    public Firefighter getFirefighterById(@PathVariable("firefighterId") Long firefighterId) {
+    public FirefighterGet getFirefighterById(@PathVariable("firefighterId") Long firefighterId) {
         return firefighterService.getFirefighterById(firefighterId);
     }
 

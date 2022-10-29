@@ -15,6 +15,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class ScheduleGet {
 
+    private Long id;
     private Date startDate;
     private Date endDate;
     private List<WorkDayGet> workDays;

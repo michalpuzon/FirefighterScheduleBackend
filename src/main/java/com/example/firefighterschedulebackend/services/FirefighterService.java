@@ -3,12 +3,14 @@ package com.example.firefighterschedulebackend.services;
 import com.example.firefighterschedulebackend.mappers.DtoMapper;
 import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterCreate;
 import com.example.firefighterschedulebackend.models.Firefighter;
+import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterGet;
 import com.example.firefighterschedulebackend.repositories.FirefighterRepository;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class FirefighterService {
@@ -20,16 +22,17 @@ public class FirefighterService {
         this.firefighterRepository = firefighterRepository;
     }
 
-    public List<Firefighter> getAllFirefighters() {
-        return firefighterRepository.findAll();
+    public List<FirefighterGet> getAllFirefighters() {
+        return firefighterRepository.findAll().stream().map(mapper::FirefighterToFirefighterGet).collect(Collectors.toList());
     }
 
-    public Firefighter getFirefighterById(Long firefighterId) {
+    public FirefighterGet getFirefighterById(Long firefighterId) {
         boolean exists = firefighterRepository.existsById(firefighterId);
         if (!exists) {
             throw new IllegalStateException("firefighter with id " + firefighterId + " does not exist");
         }
-        return firefighterRepository.findAll().stream().filter(f -> firefighterId.equals(f.getId())).findFirst().orElse(null);
+        Firefighter firefighter =  firefighterRepository.findAll().stream().filter(f -> firefighterId.equals(f.getId())).findFirst().orElse(null);
+        return mapper.FirefighterToFirefighterGet(firefighter);
     }
 
     public Firefighter createNewFirefighter(FirefighterCreate firefighter) {
@@ -37,10 +40,10 @@ public class FirefighterService {
         if (firefighterOptional.isPresent()) {
             throw new IllegalStateException("Firefighter with this workNumber already exists");
         }
-        return firefighterRepository.save(mapper.firefighterCreateToFirefighter(firefighter));
+        return firefighterRepository.save(mapper.FirefighterCreateToFirefighter(firefighter));
     }
 
-    public void deleteFirefighter(Long firefighterId){
+    public void deleteFirefighter(Long firefighterId) {
         boolean exists = firefighterRepository.existsById(firefighterId);
         if (!exists) {
             throw new IllegalStateException("firefighter with id " + firefighterId + " does not exist");
