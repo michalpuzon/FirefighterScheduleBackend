@@ -1,14 +1,12 @@
 package com.example.firefighterschedulebackend.models.dto.schedule;
 
-import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayCreate;
-import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayGet;
+import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayGetWithFirefighters;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -18,5 +16,5 @@ public class ScheduleGet {
     private Long id;
     private Date startDate;
     private Date endDate;
-    private List<WorkDayGet> workDays;
+    private List<WorkDayGetWithFirefighters> workDays;
 }

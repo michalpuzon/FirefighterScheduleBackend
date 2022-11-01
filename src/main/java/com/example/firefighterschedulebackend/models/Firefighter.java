@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -19,13 +20,20 @@ public class Firefighter {
     private int workNumber;
     private String rang;
     private String unit;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
             name = "workDay_firefighter",
             joinColumns = @JoinColumn(name = "firefighter_id"),
             inverseJoinColumns = @JoinColumn(name = "workDay_id")
     )
-    private List<WorkDay> workDays;
+    private List<WorkDay> workDays = new ArrayList<>();
+    @ManyToMany(cascade = CascadeType.MERGE)
+    @JoinTable(
+            name = "position_firefighter",
+            joinColumns = @JoinColumn(name = "firefighter_id"),
+            inverseJoinColumns = @JoinColumn(name = "position_id")
+    )
+    private List<Position> positions = new ArrayList<>();
 
     public Firefighter(String name, String lastName, int workNumber, String rang, String unit) {
         this.name = name;

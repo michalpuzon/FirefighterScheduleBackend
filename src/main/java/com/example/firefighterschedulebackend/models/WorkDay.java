@@ -1,6 +1,5 @@
 package com.example.firefighterschedulebackend.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,15 +17,24 @@ public class WorkDay {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Date date;
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
-    @ManyToMany(mappedBy = "workDays")
-    private List<Firefighter> firefighters;
+    @ManyToMany(mappedBy = "workDays", cascade = CascadeType.MERGE)
+    private List<Firefighter> firefighters = new ArrayList<>();
 
     public WorkDay(Date date, Schedule schedule) {
         this.date = date;
         this.schedule = schedule;
         this.firefighters = new ArrayList<>();
+    }
+
+    @Override
+    public String toString() {
+        return "WorkDay{" +
+                "id=" + id +
+                ", date=" + date +
+                ", schedule=" + schedule.getId() +
+                '}';
     }
 }

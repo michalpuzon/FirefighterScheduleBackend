@@ -37,4 +37,10 @@ public class FirefighterController {
     public void deleteFirefighter(@PathVariable("firefighterId") Long firefighterId) {
         firefighterService.deleteFirefighter(firefighterId);
     }
+
+    @PutMapping(path = "{firefighterId}/{positionId}")
+    public FirefighterGet addFirefighterToDay(@PathVariable("firefighterId") Long firefighterId,
+                                          @PathVariable("positionId") Long positionId) {
+        return firefighterService.addPositionToFirefighter(firefighterId, positionId);
+    }
 }

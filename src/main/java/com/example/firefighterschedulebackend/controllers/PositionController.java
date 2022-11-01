@@ -1,7 +1,7 @@
 package com.example.firefighterschedulebackend.controllers;
 
-import com.example.firefighterschedulebackend.models.Position;
 import com.example.firefighterschedulebackend.models.dto.position.PositionCreate;
+import com.example.firefighterschedulebackend.models.dto.position.PositionGet;
 import com.example.firefighterschedulebackend.services.PositionService;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,16 +18,16 @@ public class PositionController {
     }
 
     @GetMapping
-    public List<Position> getAllPositions(){
+    public List<PositionGet> getAllPositions(){
         return positionService.getAllPositions();
     }
     @GetMapping(path = "{positionId}")
-    public Position getPositionById(@PathVariable("positionId") Long positionId) {
+    public PositionGet getPositionById(@PathVariable("positionId") Long positionId) {
         return positionService.getPositionById(positionId);
     }
 
     @PostMapping
-    public Position createNewPosition(@RequestBody PositionCreate position){
+    public PositionCreate createNewPosition(@RequestBody PositionCreate position){
         return positionService.createNewPosition(position);
     }
     @DeleteMapping(path = "{positionId}")

@@ -4,7 +4,7 @@ import com.example.firefighterschedulebackend.mappers.DtoMapper;
 import com.example.firefighterschedulebackend.models.Firefighter;
 import com.example.firefighterschedulebackend.models.WorkDay;
 import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayCreate;
-import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayGet;
+import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayGetWithFirefighters;
 import com.example.firefighterschedulebackend.repositories.WorkDayRepository;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
@@ -26,24 +26,25 @@ public class WorkDayService {
         this.firefighterService = firefighterService;
     }
 
-    public List<WorkDayGet> getAllWorkDays() {
+    public List<WorkDayGetWithFirefighters> getAllWorkDays() {
         List<WorkDay> days = workDayRepository.findAll();
-        return days.stream().map(mapper::WorkDayToWorkDayGet).collect(Collectors.toList());
+        return days.stream().map(mapper::WorkDayToWorkDayGetWithFirefighters).collect(Collectors.toList());
     }
 
-    public WorkDayGet getWorkDayById(Long workDayId) {
+    public WorkDayGetWithFirefighters getWorkDayById(Long workDayId) {
         boolean exists = workDayRepository.existsById(workDayId);
         if (!exists) {
             throw new IllegalStateException("workDay with id " + workDayId + " does not exist");
         }
         WorkDay workDay = workDayRepository.findAll().stream().filter(p -> workDayId.equals(p.getId())).findFirst().orElse(null);
-        return mapper.WorkDayToWorkDayGet(workDay);
+        return mapper.WorkDayToWorkDayGetWithFirefighters(workDay);
     }
 
-    public WorkDay createNewWorkDay(WorkDayCreate workDay) {
+    public WorkDayCreate createNewWorkDay(WorkDayCreate workDay) {
         WorkDay workDayDB = mapper.WorkDayCreateToWorkDay(workDay);
         workDayDB.setSchedule(scheduleService.getScheduleById(workDay.getScheduleId()));
-        return workDayRepository.save(workDayDB);
+        workDayRepository.save(workDayDB);
+        return workDay;
     }
 
     public void deleteWorkDay(Long workDayId) {
@@ -54,11 +55,13 @@ public class WorkDayService {
         workDayRepository.deleteById(workDayId);
     }
 
-    public WorkDayGet addFirefighterToWorkDay(Long workDayId, Long firefighterId){
+    public WorkDayGetWithFirefighters addFirefighterToWorkDay(Long workDayId, Long firefighterId){
         Firefighter firefighter = mapper.FirefighterGetToFirefighter(firefighterService.getFirefighterById(firefighterId));
-        WorkDay workDay = mapper.WorkDayGetToWorkDay(getWorkDayById(workDayId));
+        WorkDayGetWithFirefighters workDayGetWithFirefighters = getWorkDayById(workDayId);
+        WorkDay workDay = mapper.WorkDayGetWithFirefightersToWorkDay(workDayGetWithFirefighters);
+        workDay.setSchedule(scheduleService.getScheduleById(workDayGetWithFirefighters.getScheduleId()));
         workDay.getFirefighters().add(firefighter);
         workDayRepository.save(workDay);
-        return mapper.WorkDayToWorkDayGet(workDay);
+        return mapper.WorkDayToWorkDayGetWithFirefighters(workDay);
     }
 }
