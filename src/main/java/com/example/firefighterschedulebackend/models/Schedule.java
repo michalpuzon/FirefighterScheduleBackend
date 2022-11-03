@@ -1,15 +1,18 @@
 package com.example.firefighterschedulebackend.models;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
-@NoArgsConstructor
 public class Schedule {
 
     @Id
@@ -17,8 +20,12 @@ public class Schedule {
     private Long id;
     private Date startDate;
     private Date endDate;
-    @OneToMany(mappedBy = "schedule")
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
     private List<WorkDay> workDays;
+
+    public Schedule() {
+        this.workDays = new ArrayList<>();
+    }
 
     public Schedule(Date startDate, Date endDate, List<WorkDay> workDays) {
         this.startDate = startDate;

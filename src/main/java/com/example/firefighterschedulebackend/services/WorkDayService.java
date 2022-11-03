@@ -6,25 +6,22 @@ import com.example.firefighterschedulebackend.models.WorkDay;
 import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayCreate;
 import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayGetWithFirefighters;
 import com.example.firefighterschedulebackend.repositories.WorkDayRepository;
+import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class WorkDayService {
 
     private final WorkDayRepository workDayRepository;
     private final ScheduleService scheduleService;
     private final FirefighterService firefighterService;
-    private final DtoMapper mapper = Mappers.getMapper(DtoMapper.class);
-
-    public WorkDayService(WorkDayRepository workDayRepository, ScheduleService scheduleService, FirefighterService firefighterService) {
-        this.workDayRepository = workDayRepository;
-        this.scheduleService = scheduleService;
-        this.firefighterService = firefighterService;
-    }
+    private final DtoMapper mapper;
 
     public List<WorkDayGetWithFirefighters> getAllWorkDays() {
         List<WorkDay> days = workDayRepository.findAll();
@@ -61,7 +58,8 @@ public class WorkDayService {
         WorkDay workDay = mapper.WorkDayGetWithFirefightersToWorkDay(workDayGetWithFirefighters);
         workDay.setSchedule(scheduleService.getScheduleById(workDayGetWithFirefighters.getScheduleId()));
         workDay.getFirefighters().add(firefighter);
+        firefighter.getWorkDays().add(workDay);
         workDayRepository.save(workDay);
-        return mapper.WorkDayToWorkDayGetWithFirefighters(workDay);
+        return mapper.WorkDayToWorkDayGetWithFirefighters(Objects.requireNonNull(workDayRepository.findById(workDay.getId()).orElse(null)));
     }
 }

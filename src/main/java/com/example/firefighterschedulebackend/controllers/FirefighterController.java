@@ -4,19 +4,18 @@ import com.example.firefighterschedulebackend.models.Firefighter;
 import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterCreate;
 import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterGet;
 import com.example.firefighterschedulebackend.services.FirefighterService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
+//TODO dodać powyższą adnotcje do wszystkich miejsc gdzie są dependencje
 @RequestMapping(path = "api/firefighters")
 public class FirefighterController {
 
     private final FirefighterService firefighterService;
-
-    public FirefighterController(FirefighterService firefighterService) {
-        this.firefighterService = firefighterService;
-    }
 
     @GetMapping
     public List<FirefighterGet> getAllFirefighters() {

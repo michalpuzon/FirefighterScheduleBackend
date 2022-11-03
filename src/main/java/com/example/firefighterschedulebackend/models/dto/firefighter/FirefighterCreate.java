@@ -1,10 +1,9 @@
 package com.example.firefighterschedulebackend.models.dto.firefighter;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class FirefighterCreate {
@@ -12,6 +11,6 @@ public class FirefighterCreate {
     private String name;
     private String lastName;
     private int workNumber;
-    private String rang;
+    private String rank;
     private String unit;
 }

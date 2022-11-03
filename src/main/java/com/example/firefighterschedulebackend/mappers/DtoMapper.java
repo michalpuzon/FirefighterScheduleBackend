@@ -20,6 +20,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public abstract class DtoMapper {
+    //TODO Zmienić na małe litery i zmienić na interfejs zmienić nazwy DTO rozbić na różne mappery
     // Firefighter
     abstract FirefighterCreate FirefighterToFirefighterCreate(Firefighter firefighter);
 

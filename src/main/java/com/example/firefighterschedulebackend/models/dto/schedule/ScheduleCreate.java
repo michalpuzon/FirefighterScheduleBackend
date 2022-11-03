@@ -1,14 +1,13 @@
 package com.example.firefighterschedulebackend.models.dto.schedule;
 
 import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayCreate;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ScheduleCreate {

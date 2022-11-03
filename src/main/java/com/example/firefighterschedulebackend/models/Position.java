@@ -1,23 +1,29 @@
 package com.example.firefighterschedulebackend.models;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
-@NoArgsConstructor
 public class Position {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @ManyToMany(mappedBy = "positions", cascade = CascadeType.MERGE)
-    private List<Firefighter> firefighters = new ArrayList<>();
+    @ManyToMany(mappedBy = "positions", cascade = CascadeType.ALL)
+    private List<Firefighter> firefighters;
+
+    public Position() {
+        this.firefighters = new ArrayList<>();
+    }
 
     public Position(String name) {
         this.name = name;

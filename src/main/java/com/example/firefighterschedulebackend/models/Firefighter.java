@@ -1,15 +1,16 @@
 package com.example.firefighterschedulebackend.models;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity(name = "Firefighter")
-@NoArgsConstructor
 public class Firefighter {
 
     @Id
@@ -20,20 +21,25 @@ public class Firefighter {
     private int workNumber;
     private String rang;
     private String unit;
-    @ManyToMany(cascade = CascadeType.MERGE)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
-            name = "workDay_firefighter",
+            name = "work_day_firefighter",
             joinColumns = @JoinColumn(name = "firefighter_id"),
-            inverseJoinColumns = @JoinColumn(name = "workDay_id")
+            inverseJoinColumns = @JoinColumn(name = "work_day_id")
     )
-    private List<WorkDay> workDays = new ArrayList<>();
-    @ManyToMany(cascade = CascadeType.MERGE)
+    private List<WorkDay> workDays;
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "position_firefighter",
             joinColumns = @JoinColumn(name = "firefighter_id"),
             inverseJoinColumns = @JoinColumn(name = "position_id")
     )
-    private List<Position> positions = new ArrayList<>();
+    private List<Position> positions;
+
+    public Firefighter() {
+        this.workDays = new ArrayList<>();
+        this.positions = new ArrayList<>();
+    }
 
     public Firefighter(String name, String lastName, int workNumber, String rang, String unit) {
         this.name = name;
@@ -41,5 +47,7 @@ public class Firefighter {
         this.workNumber = workNumber;
         this.rang = rang;
         this.unit = unit;
+        this.workDays = new ArrayList<>();
+        this.positions = new ArrayList<>();
     }
 }

@@ -2,14 +2,13 @@ package com.example.firefighterschedulebackend.models.dto.workDay;
 
 
 import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterGet;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkDayGetWithFirefighters {
