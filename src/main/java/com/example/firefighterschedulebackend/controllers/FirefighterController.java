@@ -11,7 +11,6 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-//TODO dodać powyższą adnotcje do wszystkich miejsc gdzie są dependencje
 @RequestMapping(path = "api/firefighters")
 public class FirefighterController {
 

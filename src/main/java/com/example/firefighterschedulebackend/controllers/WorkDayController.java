@@ -3,18 +3,16 @@ package com.example.firefighterschedulebackend.controllers;
 import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayCreate;
 import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayGetWithFirefighters;
 import com.example.firefighterschedulebackend.services.WorkDayService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(path = "api/workdays")
 public class WorkDayController {
     private final WorkDayService workDayService;
-
-    public WorkDayController(WorkDayService workDayService) {
-        this.workDayService = workDayService;
-    }
 
     @GetMapping
     public List<WorkDayGetWithFirefighters> getAllWorkDays() {

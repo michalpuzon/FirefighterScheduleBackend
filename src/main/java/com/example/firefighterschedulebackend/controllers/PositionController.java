@@ -3,19 +3,17 @@ package com.example.firefighterschedulebackend.controllers;
 import com.example.firefighterschedulebackend.models.dto.position.PositionCreate;
 import com.example.firefighterschedulebackend.models.dto.position.PositionGet;
 import com.example.firefighterschedulebackend.services.PositionService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping(path = "api/positions")
+@RequiredArgsConstructor
 public class PositionController {
 
     private final PositionService positionService;
-
-    public PositionController(PositionService positionService) {
-        this.positionService = positionService;
-    }
 
     @GetMapping
     public List<PositionGet> getAllPositions(){

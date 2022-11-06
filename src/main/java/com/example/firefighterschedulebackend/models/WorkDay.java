@@ -1,6 +1,5 @@
 package com.example.firefighterschedulebackend.models;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,7 +21,6 @@ public class WorkDay {
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
     @ManyToMany(mappedBy = "workDays", cascade = CascadeType.ALL)
-    //TODO do dodania powyższa adnotacja do innych encji i DTO, poprawienie konstruktorów
     private List<Firefighter> firefighters = new ArrayList<>();
 
 }

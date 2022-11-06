@@ -1,13 +1,14 @@
 package com.example.firefighterschedulebackend.services;
 
-import com.example.firefighterschedulebackend.mappers.DtoMapper;
+import com.example.firefighterschedulebackend.mappers.FirefighterMapper;
+import com.example.firefighterschedulebackend.mappers.PositionMapper;
 import com.example.firefighterschedulebackend.models.Position;
 import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterCreate;
 import com.example.firefighterschedulebackend.models.Firefighter;
 import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterGet;
 import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterGetWithWorkDays;
 import com.example.firefighterschedulebackend.repositories.FirefighterRepository;
-import org.mapstruct.factory.Mappers;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,19 +16,17 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class FirefighterService {
 
     private final FirefighterRepository firefighterRepository;
     private final PositionService positionService;
-    private final DtoMapper mapper = Mappers.getMapper(DtoMapper.class);
+    private final FirefighterMapper firefighterMapper;
+    private final PositionMapper positionMapper;
 
-    public FirefighterService(FirefighterRepository firefighterRepository, PositionService positionService) {
-        this.firefighterRepository = firefighterRepository;
-        this.positionService = positionService;
-    }
 
     public List<FirefighterGet> getAllFirefighters() {
-        return firefighterRepository.findAll().stream().map(mapper::FirefighterToFirefighterGet).collect(Collectors.toList());
+        return firefighterRepository.findAll().stream().map(firefighterMapper::firefighterToFirefighterGet).collect(Collectors.toList());
     }
 
     public FirefighterGet getFirefighterById(Long firefighterId) {
@@ -36,7 +35,7 @@ public class FirefighterService {
             throw new IllegalStateException("firefighter with id " + firefighterId + " does not exist");
         }
         Firefighter firefighter = firefighterRepository.findAll().stream().filter(f -> firefighterId.equals(f.getId())).findFirst().orElse(null);
-        return mapper.FirefighterToFirefighterGet(firefighter);
+        return firefighterMapper.firefighterToFirefighterGet(firefighter);
     }
 
     public FirefighterGetWithWorkDays getFirefighterWithWorkDaysById(Long firefighterId) {
@@ -45,7 +44,7 @@ public class FirefighterService {
             throw new IllegalStateException("firefighter with id " + firefighterId + " does not exist");
         }
         Firefighter firefighter = firefighterRepository.findAll().stream().filter(f -> firefighterId.equals(f.getId())).findFirst().orElse(null);
-        return mapper.FirefighterToFirefighterGetWithWorkDays(firefighter);
+        return firefighterMapper.firefighterToFirefighterGetWithWorkDays(firefighter);
     }
 
     public Firefighter createNewFirefighter(FirefighterCreate firefighter) {
@@ -53,7 +52,7 @@ public class FirefighterService {
         if (firefighterOptional.isPresent()) {
             throw new IllegalStateException("Firefighter with this workNumber already exists");
         }
-        return firefighterRepository.save(mapper.FirefighterCreateToFirefighter(firefighter));
+        return firefighterRepository.save(firefighterMapper.firefighterCreateToFirefighter(firefighter));
     }
 
     public void deleteFirefighter(Long firefighterId) {
@@ -65,11 +64,11 @@ public class FirefighterService {
     }
 
     public FirefighterGet addPositionToFirefighter(Long firefighterId, Long positionId) {
-        Position position = mapper.PositionGetToPosition(positionService.getPositionById(positionId));
-        Firefighter firefighter = mapper.FirefighterGetWithWorkDaysToFirefighter(getFirefighterWithWorkDaysById(firefighterId));
+        Position position = positionMapper.positionGetToPosition(positionService.getPositionById(positionId));
+        Firefighter firefighter = firefighterMapper.firefighterGetWithWorkDaysToFirefighter(getFirefighterWithWorkDaysById(firefighterId));
         firefighter.getPositions().add(position);
         firefighterRepository.save(firefighter);
-        return mapper.FirefighterToFirefighterGet(firefighter);
+        return firefighterMapper.firefighterToFirefighterGet(firefighter);
 
     }
 }

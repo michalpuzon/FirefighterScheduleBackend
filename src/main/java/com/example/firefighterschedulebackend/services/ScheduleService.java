@@ -1,10 +1,11 @@
 package com.example.firefighterschedulebackend.services;
 
-import com.example.firefighterschedulebackend.mappers.DtoMapper;
+import com.example.firefighterschedulebackend.mappers.ScheduleMapper;
 import com.example.firefighterschedulebackend.models.Schedule;
 import com.example.firefighterschedulebackend.models.dto.schedule.ScheduleCreate;
 import com.example.firefighterschedulebackend.models.dto.schedule.ScheduleGet;
 import com.example.firefighterschedulebackend.repositories.ScheduleRepository;
+import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 
@@ -12,17 +13,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ScheduleService {
     
     private final ScheduleRepository scheduleRepository;
-    private final DtoMapper mapper = Mappers.getMapper(DtoMapper.class);
+    private final ScheduleMapper scheduleMapper;
 
-    public ScheduleService(ScheduleRepository scheduleRepository) {
-        this.scheduleRepository = scheduleRepository;
-    }
 
     public List<ScheduleGet> getAllSchedules() {
-        return scheduleRepository.findAll().stream().map(mapper::ScheduleToScheduleGet).collect(Collectors.toList());
+        return scheduleRepository.findAll().stream().map(scheduleMapper::scheduleToScheduleGet).collect(Collectors.toList());
     }
 
     public Schedule getScheduleById(Long scheduleId) {
@@ -34,7 +33,7 @@ public class ScheduleService {
     }
 
     public Schedule createNewSchedule(ScheduleCreate schedule) {
-        return scheduleRepository.save(mapper.ScheduleCreateToSchedule(schedule));
+        return scheduleRepository.save(scheduleMapper.scheduleCreateToSchedule(schedule));
     }
 
 
