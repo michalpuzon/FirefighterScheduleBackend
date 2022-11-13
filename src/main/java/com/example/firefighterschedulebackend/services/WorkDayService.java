@@ -6,6 +6,7 @@ import com.example.firefighterschedulebackend.models.Firefighter;
 import com.example.firefighterschedulebackend.models.WorkDay;
 import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayCreate;
 import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayGetWithFirefighters;
+import com.example.firefighterschedulebackend.repositories.ScheduleRepository;
 import com.example.firefighterschedulebackend.repositories.WorkDayRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 public class WorkDayService {
 
     private final WorkDayRepository workDayRepository;
-    private final ScheduleService scheduleService;
+    private final ScheduleRepository scheduleRepository;
     private final FirefighterService firefighterService;
     private final WorkDayMapper workDayMapper;
     private final FirefighterMapper firefighterMapper;
@@ -40,7 +41,7 @@ public class WorkDayService {
 
     public WorkDayCreate createNewWorkDay(WorkDayCreate workDay) {
         WorkDay workDayDB = workDayMapper.workDayCreateToWorkDay(workDay);
-        workDayDB.setSchedule(scheduleService.getScheduleById(workDay.getScheduleId()));
+        workDayDB.setSchedule(scheduleRepository.getReferenceById(workDay.getScheduleId()));
         workDayRepository.save(workDayDB);
         return workDay;
     }
@@ -57,7 +58,7 @@ public class WorkDayService {
         Firefighter firefighter = firefighterMapper.firefighterGetToFirefighter(firefighterService.getFirefighterById(firefighterId));
         WorkDayGetWithFirefighters workDayGetWithFirefighters = getWorkDayById(workDayId);
         WorkDay workDay = workDayMapper.workDayGetWithFirefightersToWorkDay(workDayGetWithFirefighters);
-        workDay.setSchedule(scheduleService.getScheduleById(workDayGetWithFirefighters.getScheduleId()));
+        workDay.setSchedule(scheduleRepository.getReferenceById(workDayGetWithFirefighters.getScheduleId()));
         workDay.getFirefighters().add(firefighter);
         firefighter.getWorkDays().add(workDay);
         workDayRepository.save(workDay);

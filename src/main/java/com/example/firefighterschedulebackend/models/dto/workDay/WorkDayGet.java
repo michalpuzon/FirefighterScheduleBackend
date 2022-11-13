@@ -2,6 +2,9 @@ package com.example.firefighterschedulebackend.models.dto.workDay;
 
 import lombok.*;
 
+import javax.persistence.Basic;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.util.Date;
 
 @Getter
@@ -11,6 +14,8 @@ import java.util.Date;
 public class WorkDayGet {
 
     private Long id;
+    @Basic
+    @Temporal(TemporalType.DATE)
     private Date date;
     private Long scheduleId;
 }

@@ -18,7 +18,11 @@ public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Basic
+    @Temporal(TemporalType.DATE)
     private Date startDate;
+    @Basic
+    @Temporal(TemporalType.DATE)
     private Date endDate;
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
     private List<WorkDay> workDays;

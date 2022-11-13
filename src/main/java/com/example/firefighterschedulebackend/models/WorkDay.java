@@ -16,6 +16,8 @@ public class WorkDay {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Basic
+    @Temporal(TemporalType.DATE)
     private Date date;
     @ManyToOne()
     @JoinColumn(name = "schedule_id")
@@ -23,4 +25,13 @@ public class WorkDay {
     @ManyToMany(mappedBy = "workDays", cascade = CascadeType.ALL)
     private List<Firefighter> firefighters = new ArrayList<>();
 
+    @Override
+    public String toString() {
+        return "WorkDay{" +
+                "id=" + id +
+                ", date=" + date +
+                ", schedule=" + schedule.getId() +
+                ", firefighters=" + firefighters +
+                '}';
+    }
 }
