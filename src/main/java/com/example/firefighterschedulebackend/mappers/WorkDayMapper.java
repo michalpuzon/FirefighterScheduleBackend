@@ -30,5 +30,7 @@ public interface WorkDayMapper {
         return workDayGetWithFirefighters;
     }
 
+
+
     List<FirefighterGet> firefighterListToFirefighterGetList(List<Firefighter> firefighters);
 }

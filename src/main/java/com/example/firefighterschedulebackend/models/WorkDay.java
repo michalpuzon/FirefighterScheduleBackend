@@ -22,16 +22,7 @@ public class WorkDay {
     @ManyToOne()
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
-    @ManyToMany(mappedBy = "workDays", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "workDays", cascade = CascadeType.MERGE)
     private List<Firefighter> firefighters = new ArrayList<>();
 
-    @Override
-    public String toString() {
-        return "WorkDay{" +
-                "id=" + id +
-                ", date=" + date +
-                ", schedule=" + schedule.getId() +
-                ", firefighters=" + firefighters +
-                '}';
-    }
 }

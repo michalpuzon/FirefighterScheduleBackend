@@ -6,6 +6,8 @@ import com.example.firefighterschedulebackend.models.WorkDay;
 import com.example.firefighterschedulebackend.models.dto.schedule.ScheduleCreate;
 import com.example.firefighterschedulebackend.models.dto.schedule.ScheduleGet;
 import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayCreate;
+import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayGet;
+import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayGetWithFirefighters;
 import com.example.firefighterschedulebackend.repositories.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

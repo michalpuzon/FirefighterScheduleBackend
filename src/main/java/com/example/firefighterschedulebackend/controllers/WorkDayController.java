@@ -1,6 +1,7 @@
 package com.example.firefighterschedulebackend.controllers;
 
 import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayCreate;
+import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayGet;
 import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayGetWithFirefighters;
 import com.example.firefighterschedulebackend.services.WorkDayService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class WorkDayController {
     }
 
     @PostMapping
-    public WorkDayCreate createNewWorkDay(@RequestBody WorkDayCreate workDay) {
+    public WorkDayGetWithFirefighters createNewWorkDay(@RequestBody WorkDayCreate workDay) {
         return workDayService.createNewWorkDay(workDay);
     }
 
