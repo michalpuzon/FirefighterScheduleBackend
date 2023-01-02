@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "api/positions")
 @RequiredArgsConstructor
+@RequestMapping(path = "api/positions")
+
 public class PositionController {
 
     private final PositionService positionService;
@@ -19,6 +20,7 @@ public class PositionController {
     public List<PositionGet> getAllPositions(){
         return positionService.getAllPositions();
     }
+
     @GetMapping(path = "{positionId}")
     public PositionGet getPositionById(@PathVariable("positionId") Long positionId) {
         return positionService.getPositionById(positionId);

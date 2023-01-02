@@ -5,6 +5,7 @@ import com.example.firefighterschedulebackend.mappers.WorkDayMapper;
 import com.example.firefighterschedulebackend.models.Firefighter;
 import com.example.firefighterschedulebackend.models.WorkDay;
 import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterGet;
+import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterGetWithWorkDays;
 import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayCreate;
 import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayGet;
 import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayGetWithFirefighters;
@@ -14,8 +15,11 @@ import com.example.firefighterschedulebackend.repositories.WorkDayRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,8 +57,14 @@ public class WorkDayService {
 
     public void fillWorkDayWithFirefighters(Long workDayId, int firefightersLimit) {
         List<FirefighterGet> firefighters = firefighterService.getAllFirefighters();
-        for (int i = 0; i < firefightersLimit; i++) {
-            addFirefighterToWorkDay(workDayId, firefighters.get(i).getId());
+        Date dayDate = getWorkDayById(workDayId).getDate();
+        int numberOfFirefighters = 0;
+        for (int i = 0; i <= firefighters.size() - 1; i++) {
+            FirefighterGetWithWorkDays firefighter = firefighterService.getFirefighterWithWorkDaysById(firefighters.get(i).getId());
+                if (!isMoreThanTwoDaysBetweenWork(dayDate, firefighter.getWorkDays())) continue;
+                addFirefighterToWorkDay(workDayId, firefighter.getId());
+                numberOfFirefighters++;
+                if (numberOfFirefighters >= firefightersLimit) break;
         }
     }
 
@@ -75,5 +85,18 @@ public class WorkDayService {
             workDayRepository.save(workDay);
             return workDayMapper.workDayToWorkDayGetWithFirefighters(Objects.requireNonNull(workDayRepository.findById(workDay.getId()).orElse(null)));
         } else throw new IllegalStateException("This Firefighter is already sign to this day");
+    }
+
+    private boolean isMoreThanTwoDaysBetweenWork(Date dateToCheck, List<WorkDayGet> workDays) {
+        long firstDateInMs = dateToCheck.getTime();
+        if (workDays.isEmpty()) return true;
+
+        for (int i = 0; i <= workDays.size() - 1;i++) {
+            long secondDateInMs = workDays.get(i).getDate().getTime();
+            long timeDiff = Math.abs(secondDateInMs - firstDateInMs);
+            long daysDiff = TimeUnit.DAYS.convert(timeDiff, TimeUnit.MILLISECONDS);
+            if (daysDiff < 3) return false;
+        }
+        return true;
     }
 }
