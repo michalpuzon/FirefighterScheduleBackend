@@ -3,6 +3,7 @@ package com.example.firefighterschedulebackend.controllers;
 import com.example.firefighterschedulebackend.models.Firefighter;
 import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterCreate;
 import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterGet;
+import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterGetWithWorkDays;
 import com.example.firefighterschedulebackend.services.FirefighterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class FirefighterController {
     private final FirefighterService firefighterService;
 
     @GetMapping
-    public List<FirefighterGet> getAllFirefighters() {
+    public List<FirefighterGetWithWorkDays> getAllFirefighters() {
         return firefighterService.getAllFirefighters();
     }
 

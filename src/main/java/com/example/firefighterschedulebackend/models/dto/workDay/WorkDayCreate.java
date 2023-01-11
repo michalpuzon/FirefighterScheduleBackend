@@ -1,19 +1,15 @@
 package com.example.firefighterschedulebackend.models.dto.workDay;
 
 import lombok.*;
+import java.time.LocalDate;
 
-import javax.persistence.Basic;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import java.util.Date;
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkDayCreate {
 
-    @Basic
-    @Temporal(TemporalType.DATE)
-    private Date date;
+
+    private LocalDate date;
     private Long scheduleId;
 }

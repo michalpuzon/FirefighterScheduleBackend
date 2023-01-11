@@ -2,18 +2,15 @@ package com.example.firefighterschedulebackend.services;
 
 import com.example.firefighterschedulebackend.mappers.ScheduleMapper;
 import com.example.firefighterschedulebackend.models.Schedule;
-import com.example.firefighterschedulebackend.models.WorkDay;
 import com.example.firefighterschedulebackend.models.dto.schedule.ScheduleCreate;
 import com.example.firefighterschedulebackend.models.dto.schedule.ScheduleGet;
 import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayCreate;
-import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayGet;
-import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayGetWithFirefighters;
 import com.example.firefighterschedulebackend.repositories.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,18 +36,11 @@ public class ScheduleService {
 
     public Schedule createNewSchedule(ScheduleCreate scheduleCreate) {
         Schedule schedule = scheduleMapper.scheduleCreateToSchedule(scheduleCreate);
-        Calendar calendarStart = Calendar.getInstance();
-        calendarStart.setTime(schedule.getStartDate());
-        int startYear = calendarStart.get(Calendar.YEAR);
-        int startMonth = calendarStart.get(Calendar.MONTH);
-        int startDay = calendarStart.get(Calendar.DAY_OF_MONTH);
         scheduleRepository.save(schedule);
-        long timeDiff = Math.abs(schedule.getStartDate().getTime() - schedule.getEndDate().getTime());
-        long numberOfDays = TimeUnit.DAYS.convert(timeDiff, TimeUnit.MILLISECONDS);
-        for (int i = 0; i <= numberOfDays; i++) {
+        for (int i = 0; i <= Math.abs(Duration.between(schedule.getStartDate().atStartOfDay(), schedule.getEndDate().atStartOfDay()).toDays()); i++) {
             WorkDayCreate workDayCreate = new WorkDayCreate();
             workDayCreate.setScheduleId(schedule.getId());
-            workDayCreate.setDate(new GregorianCalendar(startYear, startMonth, startDay + i).getTime());
+            workDayCreate.setDate(schedule.getStartDate().plusDays(i));
             workDayService.createNewWorkDay(workDayCreate);
         }
         return schedule;

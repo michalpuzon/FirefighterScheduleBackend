@@ -3,11 +3,7 @@ package com.example.firefighterschedulebackend.models.dto.workDay;
 
 import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterGet;
 import lombok.*;
-
-import javax.persistence.Basic;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -17,9 +13,7 @@ import java.util.List;
 public class WorkDayGetWithFirefighters {
 
     private Long id;
-    @Basic
-    @Temporal(TemporalType.DATE)
-    private Date date;
+    private LocalDate date;
     private Long scheduleId;
     private List<FirefighterGet> firefighters;
 }

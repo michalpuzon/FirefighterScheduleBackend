@@ -25,8 +25,8 @@ public class FirefighterService {
     private final PositionMapper positionMapper;
 
 
-    public List<FirefighterGet> getAllFirefighters() {
-        return firefighterRepository.findAll().stream().map(firefighterMapper::firefighterToFirefighterGet).collect(Collectors.toList());
+    public List<FirefighterGetWithWorkDays> getAllFirefighters() {
+        return firefighterRepository.findAll().stream().map(firefighterMapper::firefighterToFirefighterGetWithWorkDays).collect(Collectors.toList());
     }
 
     public FirefighterGet getFirefighterById(Long firefighterId) {
