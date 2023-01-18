@@ -10,6 +10,7 @@ import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayGet;
 import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayGetWithFirefighters;
 import com.example.firefighterschedulebackend.repositories.FirefighterRepository;
 import com.example.firefighterschedulebackend.repositories.ScheduleRepository;
+import com.example.firefighterschedulebackend.repositories.ShiftRepository;
 import com.example.firefighterschedulebackend.repositories.WorkDayRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,10 +30,15 @@ public class WorkDayService {
     private final FirefighterService firefighterService;
     private final WorkDayMapper workDayMapper;
     private final FirefighterMapper firefighterMapper;
+    private final ShiftRepository shiftRepository;
 
     public List<WorkDayGetWithFirefighters> getAllWorkDays() {
         List<WorkDay> days = workDayRepository.findAll();
-        return days.stream().map(workDayMapper::workDayToWorkDayGetWithFirefighters).collect(Collectors.toList());
+        return days.stream().map(workDay -> {
+            WorkDayGetWithFirefighters workDayGetWithFirefighters = workDayMapper.workDayToWorkDayGetWithFirefighters(workDay);
+            if (workDay.getShift() != null) workDayGetWithFirefighters.setShiftId(workDay.getShift().getId());
+            return workDayGetWithFirefighters;
+        }).collect(Collectors.toList());
     }
 
     public WorkDayGetWithFirefighters getWorkDayById(Long workDayId) {
@@ -47,19 +53,24 @@ public class WorkDayService {
     public WorkDayGetWithFirefighters createNewWorkDay(WorkDayCreate workDay) {
         WorkDay workDayDB = workDayMapper.workDayCreateToWorkDay(workDay);
         workDayDB.setSchedule(scheduleRepository.getReferenceById(workDay.getScheduleId()));
+        workDayDB.setShift(shiftRepository.getReferenceById(workDay.getShiftId()));
         workDayRepository.save(workDayDB);
         fillWorkDayWithFirefighters(workDayDB.getId(), 3);
         return workDayMapper.workDayToWorkDayGetWithFirefighters(workDayDB);
     }
 
     public void fillWorkDayWithFirefighters(Long workDayId, int firefightersLimit) {
-        List<FirefighterGetWithWorkDays> sortedByLowestNumberOfWorkDays = getFirefightersWithLowestNumberOfWorkDays(firefighterService.getAllFirefighters());
-        LocalDate workDay = getWorkDayById(workDayId).getDate();
+        WorkDayGetWithFirefighters workDay = getWorkDayById(workDayId);
+        List<FirefighterGetWithWorkDays> allFirefighters = firefighterService.getAllFirefighters();
+        List<FirefighterGetWithWorkDays> firefightersFromSameShift = allFirefighters.stream()
+                .filter(f -> Objects.equals(f.getShiftId(), workDay.getShiftId())).collect(Collectors.toList());
+        firefightersFromSameShift.forEach(firefighterGetWithWorkDays -> System.out.println(""));
+        List<FirefighterGetWithWorkDays> sortedByLowestNumberOfWorkDays = getFirefightersWithLowestNumberOfWorkDays(firefightersFromSameShift);
         int numberOfFirefighters = 0;
         for (int i = 0; i <= sortedByLowestNumberOfWorkDays.size() - 1; i++) {
-            if (!isMoreThanTwoDaysBetweenWork(workDay, sortedByLowestNumberOfWorkDays.get(i).getWorkDays()))
+            if (!isMoreThanTwoDaysBetweenWork(workDay.getDate(), sortedByLowestNumberOfWorkDays.get(i).getWorkDays()))
                 continue;
-            if (isFiveWorkDaysInRow(sortedByLowestNumberOfWorkDays.get(i).getWorkDays(), workDay)) continue;
+            if (isFiveWorkDaysInRow(sortedByLowestNumberOfWorkDays.get(i).getWorkDays(), workDay.getDate())) continue;
             addFirefighterToWorkDay(workDayId, sortedByLowestNumberOfWorkDays.get(i).getId());
             numberOfFirefighters++;
             if (numberOfFirefighters >= firefightersLimit) break;

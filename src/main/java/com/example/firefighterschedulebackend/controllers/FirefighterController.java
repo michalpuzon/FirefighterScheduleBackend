@@ -23,7 +23,7 @@ public class FirefighterController {
         return firefighterService.getAllFirefighters();
     }
 
-    @GetMapping(path = {"firefighterId"})
+    @GetMapping(path = {"{firefighterId}"})
     public FirefighterGet getFirefighterById(@PathVariable("firefighterId") Long firefighterId) {
         return firefighterService.getFirefighterById(firefighterId);
     }

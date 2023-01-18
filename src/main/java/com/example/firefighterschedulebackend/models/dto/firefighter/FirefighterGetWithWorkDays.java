@@ -20,4 +20,5 @@ public class FirefighterGetWithWorkDays {
     private String unit;
     private List<WorkDayGet> workDays;
     private List<PositionGet> positions;
+    private Long shiftId;
 }

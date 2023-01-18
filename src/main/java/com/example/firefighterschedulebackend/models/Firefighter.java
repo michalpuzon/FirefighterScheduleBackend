@@ -21,6 +21,9 @@ public class Firefighter {
     private int workNumber;
     private String rang;
     private String unit;
+    @ManyToOne
+    @JoinColumn(name = "shift_id")
+    private Shift shift;
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "work_day_firefighter",

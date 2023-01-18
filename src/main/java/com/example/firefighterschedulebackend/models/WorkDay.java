@@ -21,6 +21,9 @@ public class WorkDay {
     @ManyToOne()
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
+    @ManyToOne
+    @JoinColumn(name = "shift_id")
+    private Shift shift;
     @ManyToMany(mappedBy = "workDays", cascade = CascadeType.MERGE)
     private List<Firefighter> firefighters = new ArrayList<>();
 

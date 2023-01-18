@@ -13,4 +13,5 @@ public class WorkDayGet {
     private Long id;
     private LocalDate date;
     private Long scheduleId;
+    private Long shiftId;
 }

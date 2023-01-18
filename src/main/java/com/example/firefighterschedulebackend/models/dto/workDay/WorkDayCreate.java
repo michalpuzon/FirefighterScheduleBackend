@@ -12,4 +12,5 @@ public class WorkDayCreate {
 
     private LocalDate date;
     private Long scheduleId;
+    private Long shiftId;
 }

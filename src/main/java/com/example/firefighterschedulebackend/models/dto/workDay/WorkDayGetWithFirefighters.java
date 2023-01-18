@@ -16,4 +16,5 @@ public class WorkDayGetWithFirefighters {
     private LocalDate date;
     private Long scheduleId;
     private List<FirefighterGet> firefighters;
+    private Long shiftId;
 }

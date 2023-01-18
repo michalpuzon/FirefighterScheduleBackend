@@ -18,5 +18,6 @@ public class FirefighterGet {
     private String rang;
     private String unit;
     private List<PositionGet> positions;
+    private Long shiftId;
 
 }

@@ -8,6 +8,7 @@ import com.example.firefighterschedulebackend.models.Firefighter;
 import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterGet;
 import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterGetWithWorkDays;
 import com.example.firefighterschedulebackend.repositories.FirefighterRepository;
+import com.example.firefighterschedulebackend.repositories.ShiftRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,10 +24,17 @@ public class FirefighterService {
     private final PositionService positionService;
     private final FirefighterMapper firefighterMapper;
     private final PositionMapper positionMapper;
+    private final ShiftRepository shiftRepository;
 
 
     public List<FirefighterGetWithWorkDays> getAllFirefighters() {
-        return firefighterRepository.findAll().stream().map(firefighterMapper::firefighterToFirefighterGetWithWorkDays).collect(Collectors.toList());
+        return firefighterRepository.findAll().stream().
+                map(firefighter -> {
+                    FirefighterGetWithWorkDays firefighterGetWithWorkDays = firefighterMapper.firefighterToFirefighterGetWithWorkDays(firefighter);
+                    if (firefighter.getShift() != null)
+                        firefighterGetWithWorkDays.setShiftId(firefighter.getShift().getId());
+                    return firefighterGetWithWorkDays;
+                }).collect(Collectors.toList());
     }
 
     public FirefighterGet getFirefighterById(Long firefighterId) {
@@ -35,7 +43,9 @@ public class FirefighterService {
             throw new IllegalStateException("firefighter with id " + firefighterId + " does not exist");
         }
         Firefighter firefighter = firefighterRepository.findAll().stream().filter(f -> firefighterId.equals(f.getId())).findFirst().orElse(null);
-        return firefighterMapper.firefighterToFirefighterGet(firefighter);
+        FirefighterGet firefighterGet = firefighterMapper.firefighterToFirefighterGet(firefighter);
+        if (firefighter.getShift() != null) firefighterGet.setShiftId(firefighter.getShift().getId());
+        return firefighterGet;
     }
 
     public FirefighterGetWithWorkDays getFirefighterWithWorkDaysById(Long firefighterId) {
@@ -44,7 +54,9 @@ public class FirefighterService {
             throw new IllegalStateException("firefighter with id " + firefighterId + " does not exist");
         }
         Firefighter firefighter = firefighterRepository.findAll().stream().filter(f -> firefighterId.equals(f.getId())).findFirst().orElse(null);
-        return firefighterMapper.firefighterToFirefighterGetWithWorkDays(firefighter);
+        FirefighterGetWithWorkDays firefighterGetWithWorkDays = firefighterMapper.firefighterToFirefighterGetWithWorkDays(firefighter);
+        if (firefighter.getShift() != null) firefighterGetWithWorkDays.setShiftId(firefighter.getShift().getId());
+        return firefighterGetWithWorkDays;
     }
 
     public Firefighter createNewFirefighter(FirefighterCreate firefighter) {
@@ -52,7 +64,9 @@ public class FirefighterService {
         if (firefighterOptional.isPresent()) {
             throw new IllegalStateException("Firefighter with this workNumber already exists");
         }
-        return firefighterRepository.save(firefighterMapper.firefighterCreateToFirefighter(firefighter));
+        Firefighter firefighterDB = firefighterMapper.firefighterCreateToFirefighter(firefighter);
+        firefighterDB.setShift(shiftRepository.getReferenceById(firefighter.getShiftId()));
+        return firefighterRepository.save(firefighterDB);
     }
 
     public void deleteFirefighter(Long firefighterId) {

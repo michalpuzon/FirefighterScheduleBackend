@@ -41,6 +41,7 @@ public class ScheduleService {
             WorkDayCreate workDayCreate = new WorkDayCreate();
             workDayCreate.setScheduleId(schedule.getId());
             workDayCreate.setDate(schedule.getStartDate().plusDays(i));
+            workDayCreate.setShiftId((long) (((i + 3) % 3) + 1));
             workDayService.createNewWorkDay(workDayCreate);
         }
         return schedule;

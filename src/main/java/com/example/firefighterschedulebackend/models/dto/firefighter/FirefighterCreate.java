@@ -13,4 +13,5 @@ public class FirefighterCreate {
     private int workNumber;
     private String rang;
     private String unit;
+    private Long shiftId;
 }
