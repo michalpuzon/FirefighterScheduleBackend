@@ -15,7 +15,7 @@ public class ShiftService {
 
     private final ShiftRepository shiftRepository;
 
-    private List<Shift> getAllShifts() {
+    public List<Shift> getAllShifts() {
         return shiftRepository.findAll();
     }
 

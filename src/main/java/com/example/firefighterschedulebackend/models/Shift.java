@@ -1,6 +1,6 @@
 package com.example.firefighterschedulebackend.models;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,8 +18,10 @@ public class Shift {
     private Long id;
     private int number;
     @OneToMany(mappedBy = "shift", cascade = CascadeType.PERSIST)
+    @JsonIgnore
     private List<Firefighter> firefighters;
     @OneToMany(mappedBy = "shift", cascade = CascadeType.PERSIST)
+    @JsonIgnore
     private List<WorkDay> workDays;
 
     public Shift() {

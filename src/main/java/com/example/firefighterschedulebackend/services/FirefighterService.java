@@ -65,7 +65,7 @@ public class FirefighterService {
             throw new IllegalStateException("Firefighter with this workNumber already exists");
         }
         Firefighter firefighterDB = firefighterMapper.firefighterCreateToFirefighter(firefighter);
-        firefighterDB.setShift(shiftRepository.getReferenceById(firefighter.getShiftId()));
+        firefighterDB.setShift(shiftRepository.findAll().get(Math.toIntExact(firefighter.getShiftId()) - 1));
         return firefighterRepository.save(firefighterDB);
     }
 
