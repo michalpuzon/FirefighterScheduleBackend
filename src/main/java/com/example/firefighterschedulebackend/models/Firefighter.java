@@ -24,14 +24,14 @@ public class Firefighter {
     @ManyToOne
     @JoinColumn(name = "shift_id")
     private Shift shift;
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "work_day_firefighter",
             joinColumns = @JoinColumn(name = "firefighter_id"),
             inverseJoinColumns = @JoinColumn(name = "work_day_id")
     )
     private List<WorkDay> workDays;
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "position_firefighter",
             joinColumns = @JoinColumn(name = "firefighter_id"),

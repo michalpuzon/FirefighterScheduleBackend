@@ -1,6 +1,7 @@
 package com.example.firefighterschedulebackend.services;
 
 import com.example.firefighterschedulebackend.mappers.PositionMapper;
+import com.example.firefighterschedulebackend.models.Firefighter;
 import com.example.firefighterschedulebackend.models.Position;
 import com.example.firefighterschedulebackend.models.dto.position.PositionCreate;
 import com.example.firefighterschedulebackend.models.dto.position.PositionGet;
@@ -8,6 +9,7 @@ import com.example.firefighterschedulebackend.repositories.PositionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,10 +43,18 @@ public class PositionService {
         return position;
     }
 
+    @Transactional
     public void deletePosition(Long positionId) {
         boolean exists = positionRepository.existsById(positionId);
         if (!exists) {
             throw new IllegalStateException("position with id " + positionId + " does not exist");
+        }
+        Position position = positionRepository.findById(positionId).orElseThrow();
+        List<Firefighter> firefighters = position.getFirefighters();
+        if (!firefighters.isEmpty()) {
+            firefighters.forEach(firefighter -> {
+                firefighter.getPositions().remove(position);
+            });
         }
         positionRepository.deleteById(positionId);
     }

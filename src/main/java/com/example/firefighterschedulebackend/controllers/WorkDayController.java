@@ -1,5 +1,6 @@
 package com.example.firefighterschedulebackend.controllers;
 
+import com.example.firefighterschedulebackend.models.Position;
 import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayCreate;
 import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayGet;
 import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayGetWithFirefighters;
@@ -26,10 +27,10 @@ public class WorkDayController {
         return workDayService.getWorkDayById(workDayId);
     }
 
-    @PostMapping
-    public WorkDayGetWithFirefighters createNewWorkDay(@RequestBody WorkDayCreate workDay) {
-        return workDayService.createNewWorkDay(workDay);
-    }
+//    @PostMapping
+//    public WorkDayGetWithFirefighters createNewWorkDay(@RequestBody WorkDayCreate workDay) {
+//        return workDayService.createNewWorkDay(workDay);
+//    }
 
     @DeleteMapping(path = "{workDayId}")
     public void deleteWorkDay(@PathVariable("workDayId") Long workDayId) {

@@ -1,12 +1,13 @@
 package com.example.firefighterschedulebackend.controllers;
 
 import com.example.firefighterschedulebackend.models.Schedule;
-import com.example.firefighterschedulebackend.models.dto.schedule.ScheduleCreate;
 import com.example.firefighterschedulebackend.models.dto.schedule.ScheduleGet;
 import com.example.firefighterschedulebackend.services.ScheduleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -27,8 +28,11 @@ public class ScheduleController {
     }
 
     @PostMapping
-    public Schedule createNewSchedule(@RequestBody ScheduleCreate schedule){
-       return scheduleService.createNewSchedule(schedule);
+    public Schedule createNewSchedule(
+            @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd", iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd", iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestBody List<Long> positionsId){
+       return scheduleService.createNewSchedule(startDate,endDate,positionsId);
     }
 
     @DeleteMapping(path = "{scheduleId}")

@@ -24,7 +24,10 @@ public class WorkDay {
     @ManyToOne
     @JoinColumn(name = "shift_id")
     private Shift shift;
-    @ManyToMany(mappedBy = "workDays", cascade = CascadeType.MERGE)
+    @ManyToMany(mappedBy = "workDays", cascade = CascadeType.PERSIST)
     private List<Firefighter> firefighters = new ArrayList<>();
 
+    public WorkDay() {
+        this.firefighters = new ArrayList<>();
+    }
 }

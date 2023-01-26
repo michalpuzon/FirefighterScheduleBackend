@@ -17,10 +17,10 @@ public class Shift {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private int number;
-    @OneToMany(mappedBy = "shift", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "shift", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Firefighter> firefighters;
-    @OneToMany(mappedBy = "shift", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "shift", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<WorkDay> workDays;
 

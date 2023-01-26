@@ -3,18 +3,19 @@ package com.example.firefighterschedulebackend.services;
 import com.example.firefighterschedulebackend.mappers.FirefighterMapper;
 import com.example.firefighterschedulebackend.mappers.WorkDayMapper;
 import com.example.firefighterschedulebackend.models.Firefighter;
+import com.example.firefighterschedulebackend.models.Position;
 import com.example.firefighterschedulebackend.models.WorkDay;
+import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterGet;
 import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterGetWithWorkDays;
 import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayCreate;
 import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayGet;
 import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayGetWithFirefighters;
-import com.example.firefighterschedulebackend.repositories.FirefighterRepository;
-import com.example.firefighterschedulebackend.repositories.ScheduleRepository;
-import com.example.firefighterschedulebackend.repositories.ShiftRepository;
-import com.example.firefighterschedulebackend.repositories.WorkDayRepository;
+import com.example.firefighterschedulebackend.repositories.*;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.jdbc.Work;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
@@ -31,6 +32,7 @@ public class WorkDayService {
     private final WorkDayMapper workDayMapper;
     private final FirefighterMapper firefighterMapper;
     private final ShiftRepository shiftRepository;
+    private final PositionRepository positionRepository;
 
     public List<WorkDayGetWithFirefighters> getAllWorkDays() {
         List<WorkDay> days = workDayRepository.findAll();
@@ -50,44 +52,67 @@ public class WorkDayService {
         return workDayMapper.workDayToWorkDayGetWithFirefighters(workDay);
     }
 
-    public WorkDayGetWithFirefighters createNewWorkDay(WorkDayCreate workDay) {
+    public WorkDayGetWithFirefighters createNewWorkDay(WorkDayCreate workDay, List<Long> positionsId) {
         WorkDay workDayDB = workDayMapper.workDayCreateToWorkDay(workDay);
         workDayDB.setSchedule(scheduleRepository.getReferenceById(workDay.getScheduleId()));
         workDayDB.setShift(shiftRepository.getReferenceById(workDay.getShiftId()));
         workDayRepository.save(workDayDB);
-        fillWorkDayWithFirefighters(workDayDB.getId(), 3);
+        List<Position> positions = positionRepository.findAllById(positionsId);
+        fillWorkDayWithFirefighters(workDayDB.getId(), 5, positions);
         return workDayMapper.workDayToWorkDayGetWithFirefighters(workDayDB);
     }
 
-    public void fillWorkDayWithFirefighters(Long workDayId, int firefightersLimit) {
+    public void fillWorkDayWithFirefighters(Long workDayId, int firefightersLimit, List<Position> requiredPositions) {
         WorkDayGetWithFirefighters workDay = getWorkDayById(workDayId);
         List<FirefighterGetWithWorkDays> allFirefighters = firefighterService.getAllFirefighters();
         List<FirefighterGetWithWorkDays> firefightersFromSameShift = allFirefighters.stream()
                 .filter(f -> Objects.equals(f.getShiftId(), workDay.getShiftId())).collect(Collectors.toList());
-        firefightersFromSameShift.forEach(firefighterGetWithWorkDays -> System.out.println(""));
         List<FirefighterGetWithWorkDays> sortedByLowestNumberOfWorkDays = getFirefightersWithLowestNumberOfWorkDays(firefightersFromSameShift);
         int numberOfFirefighters = 0;
+        if (sortedByLowestNumberOfWorkDays.isEmpty()) return;
+        List<FirefighterGetWithWorkDays> selectedFirefighters = new ArrayList<>();
         for (int i = 0; i <= sortedByLowestNumberOfWorkDays.size() - 1; i++) {
+            Firefighter selectedFirefighter = firefighterRepository.findById(sortedByLowestNumberOfWorkDays.get(i).getId()).orElseThrow();
             if (!isMoreThanTwoDaysBetweenWork(workDay.getDate(), sortedByLowestNumberOfWorkDays.get(i).getWorkDays()))
                 continue;
             if (isFiveWorkDaysInRow(sortedByLowestNumberOfWorkDays.get(i).getWorkDays(), workDay.getDate())) continue;
-            addFirefighterToWorkDay(workDayId, sortedByLowestNumberOfWorkDays.get(i).getId());
+            if (!requiredPositions.isEmpty()) {
+                if (getFirefighterWithRequiredPosition(requiredPositions, selectedFirefighter)) {
+                    requiredPositions = requiredPositions.stream().filter(position -> !selectedFirefighter.getPositions().contains(position)).collect(Collectors.toList());
+                    selectedFirefighters.add(sortedByLowestNumberOfWorkDays.get(i));
+                    addFirefighterToWorkDay(workDayId, sortedByLowestNumberOfWorkDays.get(i).getId());
+                    numberOfFirefighters++;
+                    if (numberOfFirefighters >= firefightersLimit) return;
+                }
+            } else break;
+        }
+        sortedByLowestNumberOfWorkDays.removeAll(selectedFirefighters);
+        for (int j = 0; j <= sortedByLowestNumberOfWorkDays.size() - 1; j++) {
+            if (numberOfFirefighters >= firefightersLimit) return;
+            addFirefighterToWorkDay(workDayId, sortedByLowestNumberOfWorkDays.get(j).getId());
             numberOfFirefighters++;
-            if (numberOfFirefighters >= firefightersLimit) break;
         }
     }
 
+    @Transactional
     public void deleteWorkDay(Long workDayId) {
         boolean exists = workDayRepository.existsById(workDayId);
         if (!exists) {
             throw new IllegalStateException("workDay with id " + workDayId + " does not exist");
         }
+        WorkDay workDay = workDayRepository.findById(workDayId).orElseThrow();
+        List<Firefighter> firefighters = workDay.getFirefighters();
+        if (firefighters != null) {
+            firefighters.forEach(firefighter -> {
+                firefighter.getWorkDays().remove(workDay);
+            });
+        }
         workDayRepository.deleteById(workDayId);
     }
 
     public WorkDayGetWithFirefighters addFirefighterToWorkDay(Long workDayId, Long firefighterId) {
-        Firefighter firefighter = firefighterRepository.getReferenceById(firefighterId);
-        WorkDay workDay = workDayRepository.getReferenceById(workDayId);
+        Firefighter firefighter = firefighterRepository.findById(firefighterId).orElseThrow();
+        WorkDay workDay = workDayRepository.findById(workDayId).orElseThrow();
         if (!workDay.getFirefighters().contains(firefighter)) {
             workDay.getFirefighters().add(firefighter);
             firefighter.getWorkDays().add(workDay);
@@ -139,6 +164,16 @@ public class WorkDayService {
             }
         }
         return daysInRow >= 4;
+    }
+
+    public record FirefighterWithSuitablePositions(Firefighter firefighter, int numberOfSuitablePositions) {
+    }
+
+    private boolean getFirefighterWithRequiredPosition(List<Position> positions, Firefighter firefighter) {
+        for (Position position : positions) {
+            if (firefighter.getPositions().contains(position)) return true;
+        }
+        return false;
     }
 }
 
