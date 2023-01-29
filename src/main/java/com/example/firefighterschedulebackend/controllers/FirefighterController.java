@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:8080/")
+@CrossOrigin()
 @RequestMapping(path = "api/firefighters")
 public class FirefighterController {
 
@@ -38,9 +38,16 @@ public class FirefighterController {
         firefighterService.deleteFirefighter(firefighterId);
     }
 
-    @PutMapping(path = "{firefighterId}/{positionId}")
-    public FirefighterGet addFirefighterToDay(@PathVariable("firefighterId") Long firefighterId,
+    @PutMapping(path = "add/{firefighterId}/{positionId}")
+    public FirefighterGet addPositionToFirefighter(@PathVariable("firefighterId") Long firefighterId,
                                           @PathVariable("positionId") Long positionId) {
         return firefighterService.addPositionToFirefighter(firefighterId, positionId);
     }
+
+    @PutMapping(path = "remove/{firefighterId}/{positionId}")
+    public FirefighterGet removePositionFromFirefighter(@PathVariable("firefighterId") Long firefighterId,
+                                              @PathVariable("positionId") Long positionId) {
+        return firefighterService.removePositionFromFirefighter(firefighterId, positionId);
+    }
+
 }

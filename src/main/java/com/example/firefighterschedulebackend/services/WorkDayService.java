@@ -52,13 +52,13 @@ public class WorkDayService {
         return workDayMapper.workDayToWorkDayGetWithFirefighters(workDay);
     }
 
-    public WorkDayGetWithFirefighters createNewWorkDay(WorkDayCreate workDay, List<Long> positionsId) {
+    public WorkDayGetWithFirefighters createNewWorkDay(WorkDayCreate workDay, List<Long> positionsId, int numberOfFirefightersEveryWorkDay) {
         WorkDay workDayDB = workDayMapper.workDayCreateToWorkDay(workDay);
         workDayDB.setSchedule(scheduleRepository.getReferenceById(workDay.getScheduleId()));
         workDayDB.setShift(shiftRepository.getReferenceById(workDay.getShiftId()));
         workDayRepository.save(workDayDB);
         List<Position> positions = positionRepository.findAllById(positionsId);
-        fillWorkDayWithFirefighters(workDayDB.getId(), 5, positions);
+        fillWorkDayWithFirefighters(workDayDB.getId(), numberOfFirefightersEveryWorkDay, positions);
         return workDayMapper.workDayToWorkDayGetWithFirefighters(workDayDB);
     }
 

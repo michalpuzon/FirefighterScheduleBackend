@@ -9,6 +9,7 @@ import com.example.firefighterschedulebackend.models.Firefighter;
 import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterGet;
 import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterGetWithWorkDays;
 import com.example.firefighterschedulebackend.repositories.FirefighterRepository;
+import com.example.firefighterschedulebackend.repositories.PositionRepository;
 import com.example.firefighterschedulebackend.repositories.ShiftRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class FirefighterService {
     private final FirefighterMapper firefighterMapper;
     private final PositionMapper positionMapper;
     private final ShiftRepository shiftRepository;
+    private final PositionRepository positionRepository;
 
 
     public List<FirefighterGetWithWorkDays> getAllFirefighters() {
@@ -94,11 +96,23 @@ public class FirefighterService {
     }
 
     public FirefighterGet addPositionToFirefighter(Long firefighterId, Long positionId) {
-        Position position = positionMapper.positionGetToPosition(positionService.getPositionById(positionId));
+        Position position = positionRepository.findById(positionId).orElseThrow();
         Firefighter firefighter = firefighterRepository.findById(firefighterId).orElseThrow();
+        if (firefighter.getPositions().contains(position)) throw new IllegalStateException("Firefighter already got this position");
+        else {
         firefighter.getPositions().add(position);
         firefighterRepository.save(firefighter);
+        }
         return firefighterMapper.firefighterToFirefighterGet(firefighter);
-
+    }
+    public FirefighterGet removePositionFromFirefighter(Long firefighterId, Long positionId) {
+        Position position = positionRepository.findById(positionId).orElseThrow();
+        Firefighter firefighter = firefighterRepository.findById(firefighterId).orElseThrow();
+        if (!firefighter.getPositions().contains(position)) throw new IllegalStateException("Firefighter does not have this position");
+        else {
+            firefighter.getPositions().remove(position);
+            firefighterRepository.save(firefighter);
+        }
+        return firefighterMapper.firefighterToFirefighterGet(firefighter);
     }
 }

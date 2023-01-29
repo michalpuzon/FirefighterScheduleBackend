@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:8080/")
+@CrossOrigin()
 @RequestMapping(path = "api/positions")
 
 public class PositionController {

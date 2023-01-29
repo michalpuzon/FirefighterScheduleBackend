@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:8080/")
+@CrossOrigin()
 @RequestMapping(path = "api/schedules")
 public class ScheduleController {
 
@@ -31,8 +31,9 @@ public class ScheduleController {
     public Schedule createNewSchedule(
             @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd", iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd", iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam int peopleLimit,
             @RequestBody List<Long> positionsId){
-       return scheduleService.createNewSchedule(startDate,endDate,positionsId);
+       return scheduleService.createNewSchedule(startDate,endDate,positionsId, peopleLimit);
     }
 
     @DeleteMapping(path = "{scheduleId}")
