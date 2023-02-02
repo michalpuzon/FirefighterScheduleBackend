@@ -79,6 +79,12 @@ public class WorkDayService {
             if (!requiredPositions.isEmpty()) {
                 if (getFirefighterWithRequiredPosition(requiredPositions, selectedFirefighter)) {
                     requiredPositions = requiredPositions.stream().filter(position -> !selectedFirefighter.getPositions().contains(position)).collect(Collectors.toList());
+                    for (Position requiredPosition: requiredPositions){
+                        if (selectedFirefighter.getPositions().contains(requiredPosition)) {
+                            requiredPositions.remove(requiredPosition);
+                            break;
+                        }
+                    }
                     selectedFirefighters.add(sortedByLowestNumberOfWorkDays.get(i));
                     addFirefighterToWorkDay(workDayId, sortedByLowestNumberOfWorkDays.get(i).getId());
                     numberOfFirefighters++;
