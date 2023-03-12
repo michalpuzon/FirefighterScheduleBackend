@@ -12,8 +12,11 @@ import com.example.firefighterschedulebackend.repositories.FirefighterRepository
 import com.example.firefighterschedulebackend.repositories.PositionRepository;
 import com.example.firefighterschedulebackend.repositories.ShiftRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +32,8 @@ public class FirefighterService {
     private final PositionMapper positionMapper;
     private final ShiftRepository shiftRepository;
     private final PositionRepository positionRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     public List<FirefighterGetWithWorkDays> getAllFirefighters() {
@@ -69,8 +74,17 @@ public class FirefighterService {
             throw new IllegalStateException("Firefighter with this workNumber already exists");
         }
         Firefighter firefighterDB = firefighterMapper.firefighterCreateToFirefighter(firefighter);
+        String plainPassword = firefighter.getPassword();
+        String encodedPassword = passwordEncoder.encode(plainPassword);
+        firefighterDB.setPassword(encodedPassword);
         firefighterDB.setShift(shiftRepository.findAll().get(Math.toIntExact(firefighter.getShiftId()) - 1));
         return firefighterRepository.save(firefighterDB);
+    }
+    @PostConstruct
+    public void createFirefighter(){
+        if (firefighterRepository.findByWorkNumber(3333).isPresent()) return;
+        FirefighterCreate firefighterCreate = new FirefighterCreate("Adam", "TEST", 3333, "Szef", "Dębica", 1L, "hasło", "ROLE_ADMIN");
+        createNewFirefighter(firefighterCreate);
     }
 
     @Transactional

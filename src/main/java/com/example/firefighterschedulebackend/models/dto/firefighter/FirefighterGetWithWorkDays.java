@@ -21,4 +21,6 @@ public class FirefighterGetWithWorkDays {
     private List<WorkDayGet> workDays;
     private List<PositionGet> positions;
     private Long shiftId;
+    private String password;
+    private String role;
 }

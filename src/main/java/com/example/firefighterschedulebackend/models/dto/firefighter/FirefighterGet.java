@@ -19,5 +19,7 @@ public class FirefighterGet {
     private String unit;
     private List<PositionGet> positions;
     private Long shiftId;
+    private String password;
+    private String role;
 
 }

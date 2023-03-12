@@ -21,6 +21,9 @@ public class Firefighter {
     private int workNumber;
     private String rang;
     private String unit;
+    private String role;
+    @Column(name = "password")
+    private String password;
     @ManyToOne
     @JoinColumn(name = "shift_id")
     private Shift shift;
@@ -44,7 +47,7 @@ public class Firefighter {
         this.positions = new ArrayList<>();
     }
 
-    public Firefighter(String name, String lastName, int workNumber, String rang, String unit) {
+    public Firefighter(String name, String lastName, int workNumber, String rang, String unit, String password) {
         this.name = name;
         this.lastName = lastName;
         this.workNumber = workNumber;
@@ -52,5 +55,6 @@ public class Firefighter {
         this.unit = unit;
         this.workDays = new ArrayList<>();
         this.positions = new ArrayList<>();
+        this.password = password;
     }
 }

@@ -4,10 +4,14 @@ import com.example.firefighterschedulebackend.models.Firefighter;
 import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterCreate;
 import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterGet;
 import com.example.firefighterschedulebackend.models.dto.firefighter.FirefighterGetWithWorkDays;
+import com.example.firefighterschedulebackend.repositories.FirefighterRepository;
 import com.example.firefighterschedulebackend.services.FirefighterService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -17,8 +21,10 @@ import java.util.List;
 public class FirefighterController {
 
     private final FirefighterService firefighterService;
+    private final FirefighterRepository firefighterRepository;
 
     @GetMapping
+    @Secured({"ROLE_USER"})
     public List<FirefighterGetWithWorkDays> getAllFirefighters() {
         return firefighterService.getAllFirefighters();
     }
@@ -26,6 +32,11 @@ public class FirefighterController {
     @GetMapping(path = {"{firefighterId}"})
     public FirefighterGet getFirefighterById(@PathVariable("firefighterId") Long firefighterId) {
         return firefighterService.getFirefighterById(firefighterId);
+    }
+
+    @GetMapping(path = {"/me"})
+    public Firefighter me(@AuthenticationPrincipal Principal principal) {
+        return null;
     }
 
     @PostMapping

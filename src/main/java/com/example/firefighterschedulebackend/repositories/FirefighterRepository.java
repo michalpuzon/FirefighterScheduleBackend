@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface FirefighterRepository extends JpaRepository<Firefighter, Long> {
 
     Optional<Firefighter> findByWorkNumber(int workNumber);
+
+    Optional<Firefighter> findByWorkNumberAndPassword(int workNumber, String password);
 }

@@ -14,4 +14,6 @@ public class FirefighterCreate {
     private String rang;
     private String unit;
     private Long shiftId;
+    private String password;
+    private String role;
 }
