@@ -77,7 +77,7 @@ public class FirefighterService {
         String plainPassword = firefighter.getPassword();
         String encodedPassword = passwordEncoder.encode(plainPassword);
         firefighterDB.setPassword(encodedPassword);
-        if (!shiftRepository.findAll().isEmpty() && firefighter.getShiftId() != null)
+        if (!shiftRepository.findAll().isEmpty() && firefighter.getShiftId() != null && firefighter.getShiftId() != 0)
         firefighterDB.setShift(shiftRepository.findAll().get(Math.toIntExact(firefighter.getShiftId()) - 2));
         return firefighterRepository.save(firefighterDB);
     }
