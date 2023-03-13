@@ -1,5 +1,7 @@
 package com.example.firefighterschedulebackend.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,11 +22,13 @@ public class WorkDay {
     private LocalDate date;
     @ManyToOne()
     @JoinColumn(name = "schedule_id")
+    @JsonIgnore
     private Schedule schedule;
     @ManyToOne
     @JoinColumn(name = "shift_id")
     private Shift shift;
     @ManyToMany(mappedBy = "workDays", cascade = CascadeType.PERSIST)
+    @JsonIgnore
     private List<Firefighter> firefighters = new ArrayList<>();
 
     public WorkDay() {

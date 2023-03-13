@@ -41,7 +41,7 @@ public class FirefighterService {
                 map(firefighter -> {
                     FirefighterGetWithWorkDays firefighterGetWithWorkDays = firefighterMapper.firefighterToFirefighterGetWithWorkDays(firefighter);
                     if (firefighter.getShift() != null)
-                        firefighterGetWithWorkDays.setShiftId(firefighter.getShift().getId());
+                        firefighterGetWithWorkDays.setShift(firefighter.getShift());
                     return firefighterGetWithWorkDays;
                 }).collect(Collectors.toList());
     }
@@ -53,7 +53,7 @@ public class FirefighterService {
         }
         Firefighter firefighter = firefighterRepository.findAll().stream().filter(f -> firefighterId.equals(f.getId())).findFirst().orElse(null);
         FirefighterGet firefighterGet = firefighterMapper.firefighterToFirefighterGet(firefighter);
-        if (firefighter.getShift() != null) firefighterGet.setShiftId(firefighter.getShift().getId());
+        if (firefighter.getShift() != null) firefighterGet.setShift(firefighter.getShift());
         return firefighterGet;
     }
 
@@ -64,7 +64,7 @@ public class FirefighterService {
         }
         Firefighter firefighter = firefighterRepository.findAll().stream().filter(f -> firefighterId.equals(f.getId())).findFirst().orElse(null);
         FirefighterGetWithWorkDays firefighterGetWithWorkDays = firefighterMapper.firefighterToFirefighterGetWithWorkDays(firefighter);
-        if (firefighter.getShift() != null) firefighterGetWithWorkDays.setShiftId(firefighter.getShift().getId());
+        if (firefighter.getShift() != null) firefighterGetWithWorkDays.setShift(firefighter.getShift());
         return firefighterGetWithWorkDays;
     }
 
@@ -77,13 +77,14 @@ public class FirefighterService {
         String plainPassword = firefighter.getPassword();
         String encodedPassword = passwordEncoder.encode(plainPassword);
         firefighterDB.setPassword(encodedPassword);
-        firefighterDB.setShift(shiftRepository.findAll().get(Math.toIntExact(firefighter.getShiftId()) - 1));
+        if (!shiftRepository.findAll().isEmpty() && firefighter.getShiftId() != null)
+        firefighterDB.setShift(shiftRepository.findAll().get(Math.toIntExact(firefighter.getShiftId()) - 2));
         return firefighterRepository.save(firefighterDB);
     }
     @PostConstruct
-    public void createFirefighter(){
-        if (firefighterRepository.findByWorkNumber(3333).isPresent()) return;
-        FirefighterCreate firefighterCreate = new FirefighterCreate("Adam", "TEST", 3333, "Szef", "Dębica", 1L, "hasło", "ROLE_ADMIN");
+    public void createAdminFirefighter(){
+        if (firefighterRepository.findByWorkNumber(0).isPresent()) return;
+        FirefighterCreate firefighterCreate = new FirefighterCreate("Admin", "Admin", 0, "Admin", "Dębica",0L, "admin", "ROLE_ADMIN");
         createNewFirefighter(firefighterCreate);
     }
 

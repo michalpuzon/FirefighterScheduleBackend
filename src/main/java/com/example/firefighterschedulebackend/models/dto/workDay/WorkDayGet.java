@@ -1,5 +1,6 @@
 package com.example.firefighterschedulebackend.models.dto.workDay;
 
+import com.example.firefighterschedulebackend.models.Shift;
 import lombok.*;
 import java.time.LocalDate;
 
@@ -13,5 +14,5 @@ public class WorkDayGet {
     private Long id;
     private LocalDate date;
     private Long scheduleId;
-    private Long shiftId;
+    private Shift shift;
 }

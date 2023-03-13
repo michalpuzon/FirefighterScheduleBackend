@@ -9,6 +9,7 @@ import com.example.firefighterschedulebackend.services.FirefighterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -24,7 +25,6 @@ public class FirefighterController {
     private final FirefighterRepository firefighterRepository;
 
     @GetMapping
-    @Secured({"ROLE_USER"})
     public List<FirefighterGetWithWorkDays> getAllFirefighters() {
         return firefighterService.getAllFirefighters();
     }
@@ -35,8 +35,8 @@ public class FirefighterController {
     }
 
     @GetMapping(path = {"/me"})
-    public Firefighter me(@AuthenticationPrincipal Principal principal) {
-        return null;
+    public Firefighter me(Principal principal) {
+        return firefighterRepository.findByWorkNumber(Integer.parseInt(principal.getName())).orElseThrow();
     }
 
     @PostMapping

@@ -6,7 +6,8 @@ springdoc:
 spring:
   datasource:
     username: postgres
-    url: jdbc:postgresql://ep-solitary-sunset-549677.eu-central-1.aws.neon.tech/FirefighterSchedule?user=michalpuzon&password=tTBE9mHrKSe7
+    url: jdbc:postgresql://localhost:5432/FirefighterSchedule
+#    url: jdbc:postgresql://ep-solitary-sunset-549677.eu-central-1.aws.neon.tech/FirefighterSchedule?user=michalpuzon&password=tTBE9mHrKSe7
     driverClassName: org.postgresql.Driver
     password: '12345'
   jpa:

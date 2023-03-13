@@ -38,7 +38,7 @@ public class WorkDayService {
         List<WorkDay> days = workDayRepository.findAll();
         return days.stream().map(workDay -> {
             WorkDayGetWithFirefighters workDayGetWithFirefighters = workDayMapper.workDayToWorkDayGetWithFirefighters(workDay);
-            if (workDay.getShift() != null) workDayGetWithFirefighters.setShiftId(workDay.getShift().getId());
+            if (workDay.getShift() != null) workDayGetWithFirefighters.setShift(workDay.getShift());
             return workDayGetWithFirefighters;
         }).collect(Collectors.toList());
     }
@@ -54,8 +54,8 @@ public class WorkDayService {
 
     public WorkDayGetWithFirefighters createNewWorkDay(WorkDayCreate workDay, List<Long> positionsId, int numberOfFirefightersEveryWorkDay) {
         WorkDay workDayDB = workDayMapper.workDayCreateToWorkDay(workDay);
-        workDayDB.setSchedule(scheduleRepository.getReferenceById(workDay.getScheduleId()));
-        workDayDB.setShift(shiftRepository.getReferenceById(workDay.getShiftId()));
+        workDayDB.setSchedule(scheduleRepository.findById(workDay.getScheduleId()).orElseThrow());
+        workDayDB.setShift(shiftRepository.findById(workDay.getShiftId()).orElseThrow());
         workDayRepository.save(workDayDB);
         List<Position> positions = positionRepository.findAllById(positionsId);
         fillWorkDayWithFirefighters(workDayDB.getId(), numberOfFirefightersEveryWorkDay, positions);
@@ -64,13 +64,13 @@ public class WorkDayService {
 
     public void fillWorkDayWithFirefighters(Long workDayId, int firefightersLimit, List<Position> requiredPositions) {
         WorkDayGetWithFirefighters workDay = getWorkDayById(workDayId);
-        List<FirefighterGetWithWorkDays> allFirefighters = firefighterService.getAllFirefighters();
-        List<FirefighterGetWithWorkDays> firefightersFromSameShift = allFirefighters.stream()
-                .filter(f -> Objects.equals(f.getShiftId(), workDay.getShiftId())).collect(Collectors.toList());
-        List<FirefighterGetWithWorkDays> sortedByLowestNumberOfWorkDays = getFirefightersWithLowestNumberOfWorkDays(firefightersFromSameShift);
+        List<Firefighter> allFirefighters = firefighterRepository.findAll().stream().filter(firefighter -> !firefighter.getRole().equals("ROLE_ADMIN")).collect(Collectors.toList());
+        List<Firefighter> firefightersFromSameShift = allFirefighters.stream()
+                .filter(f -> Objects.equals(f.getShift().getId(), workDay.getShift().getId())).collect(Collectors.toList());
+        List<Firefighter> sortedByLowestNumberOfWorkDays = getFirefightersWithLowestNumberOfWorkDays(firefightersFromSameShift);
         int numberOfFirefighters = 0;
         if (sortedByLowestNumberOfWorkDays.isEmpty()) return;
-        List<FirefighterGetWithWorkDays> selectedFirefighters = new ArrayList<>();
+        List<Firefighter> selectedFirefighters = new ArrayList<>();
         for (int i = 0; i <= sortedByLowestNumberOfWorkDays.size() - 1; i++) {
             Firefighter selectedFirefighter = firefighterRepository.findById(sortedByLowestNumberOfWorkDays.get(i).getId()).orElseThrow();
             if (!isMoreThanTwoDaysBetweenWork(workDay.getDate(), sortedByLowestNumberOfWorkDays.get(i).getWorkDays()))
@@ -127,7 +127,7 @@ public class WorkDayService {
         } else throw new IllegalStateException("This Firefighter is already sign to this day");
     }
 
-    private boolean isMoreThanTwoDaysBetweenWork(LocalDate dateToCheck, List<WorkDayGet> workDays) {
+    private boolean isMoreThanTwoDaysBetweenWork(LocalDate dateToCheck, List<WorkDay> workDays) {
         if (workDays.isEmpty()) return true;
         for (int i = 0; i <= workDays.size() - 1; i++) {
             if (Math.abs(Duration.between(workDays.get(i).getDate().atStartOfDay(), dateToCheck.atStartOfDay()).toDays()) < 3)
@@ -136,8 +136,8 @@ public class WorkDayService {
         return true;
     }
 
-    private List<FirefighterGetWithWorkDays> getFirefightersWithLowestNumberOfWorkDays(List<FirefighterGetWithWorkDays> firefighters) {
-        List<FirefighterGetWithWorkDays> sortedList = new ArrayList<>();
+    private List<Firefighter> getFirefightersWithLowestNumberOfWorkDays(List<Firefighter> firefighters) {
+        List<Firefighter> sortedList = new ArrayList<>();
         while (!firefighters.isEmpty()) {
             int j = 0;
             int min = firefighters.get(0).getWorkDays().size();
@@ -153,11 +153,11 @@ public class WorkDayService {
         return sortedList;
     }
 
-    private boolean isFiveWorkDaysInRow(List<WorkDayGet> workDays, LocalDate dateToCheck) {
+    private boolean isFiveWorkDaysInRow(List<WorkDay> workDays, LocalDate dateToCheck) {
         int daysInRow = 0;
         LocalDate dateBefore = dateToCheck.minusDays(3);
         LocalDate dateAfter = dateToCheck.plusDays(3);
-        List<LocalDate> allLocalDates = workDays.stream().map(WorkDayGet::getDate).collect(Collectors.toList());
+        List<LocalDate> allLocalDates = workDays.stream().map(WorkDay::getDate).collect(Collectors.toList());
         while (daysInRow < 4) {
             if (!allLocalDates.contains(dateBefore) && !allLocalDates.contains(dateAfter)) break;
             if (allLocalDates.contains(dateBefore)) {

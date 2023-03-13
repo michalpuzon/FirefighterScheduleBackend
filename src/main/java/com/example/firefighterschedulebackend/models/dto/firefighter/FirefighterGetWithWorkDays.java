@@ -1,5 +1,6 @@
 package com.example.firefighterschedulebackend.models.dto.firefighter;
 
+import com.example.firefighterschedulebackend.models.Shift;
 import com.example.firefighterschedulebackend.models.dto.position.PositionGet;
 import com.example.firefighterschedulebackend.models.dto.workDay.WorkDayGet;
 import lombok.*;
@@ -20,7 +21,7 @@ public class FirefighterGetWithWorkDays {
     private String unit;
     private List<WorkDayGet> workDays;
     private List<PositionGet> positions;
-    private Long shiftId;
+    private Shift shift;
     private String password;
     private String role;
 }

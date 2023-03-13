@@ -26,7 +26,7 @@ public interface WorkDayMapper {
         workDayGetWithFirefighters.setDate(workDay.getDate());
         workDayGetWithFirefighters.setFirefighters(firefighterListToFirefighterGetList(workDay.getFirefighters()));
         if (workDay.getSchedule() != null) workDayGetWithFirefighters.setScheduleId(workDay.getSchedule().getId());
-        if (workDay.getShift() != null) workDayGetWithFirefighters.setShiftId(workDay.getShift().getId());
+        if (workDay.getShift() != null) workDayGetWithFirefighters.setShift(workDay.getShift());
         return workDayGetWithFirefighters;
     }
 

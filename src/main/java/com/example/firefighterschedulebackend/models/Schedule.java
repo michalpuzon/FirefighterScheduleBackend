@@ -1,5 +1,6 @@
 package com.example.firefighterschedulebackend.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

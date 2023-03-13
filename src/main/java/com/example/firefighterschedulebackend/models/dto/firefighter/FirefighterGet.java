@@ -1,5 +1,6 @@
 package com.example.firefighterschedulebackend.models.dto.firefighter;
 
+import com.example.firefighterschedulebackend.models.Shift;
 import com.example.firefighterschedulebackend.models.dto.position.PositionGet;
 import lombok.*;
 
@@ -18,7 +19,7 @@ public class FirefighterGet {
     private String rang;
     private String unit;
     private List<PositionGet> positions;
-    private Long shiftId;
+    private Shift shift;
     private String password;
     private String role;
 

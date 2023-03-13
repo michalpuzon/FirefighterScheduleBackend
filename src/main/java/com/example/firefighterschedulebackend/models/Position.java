@@ -1,5 +1,6 @@
 package com.example.firefighterschedulebackend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ public class Position {
     private Long id;
     private String name;
     @ManyToMany(mappedBy = "positions", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Firefighter> firefighters;
 
     public Position() {
